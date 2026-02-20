@@ -90,7 +90,6 @@
   font-family: 'Raleway-v4020', 'Raleway', serif !important;
   font-weight: 600;
   color: #221102;
-  min-width: 140px;
 }
 
 .catalogItemInfoValue {
@@ -198,6 +197,26 @@
   aspect-ratio: auto !important;
 }
 
+/* Плейсхолдер "Нет изображения" */
+.catalogItemNoImage {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  min-height: 500px;
+  background: rgba(34, 17, 2, 0.15);
+  border: 2px dashed rgba(203, 178, 147, 0.4);
+}
+
+.catalogItemNoImage span {
+  font-family: 'Raleway-v4020', 'Raleway', serif;
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
 /* Навигация фото */
 .catalogItemPhotoNavigation {
   display: flex;
@@ -286,6 +305,10 @@
   .catalogItemGallery > div > div {
     min-height: 320px !important;
     max-height: 420px !important;
+  }
+
+  .catalogItemNoImage {
+    min-height: clamp(280px, 45vh, 400px);
   }
 
   .catalogItemName {

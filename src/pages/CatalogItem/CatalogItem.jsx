@@ -206,51 +206,57 @@ function CatalogItem() {
           </div>
 
           {/* Правая колонка - фото (60-65% ширины) */}
-          {currentPhotos.length > 0 && (
-            <div className={styles.catalogItemPhotoBlock}>
-              <div className={styles.catalogItemGallery}>
-                <PhotoGallery
-                  photos={currentPhotos}
-                  showFullscreen={showFullscreen}
-                  onCloseFullscreen={handleCloseFullscreen}
-                  showControls={false}
-                  showArrows={false}
-                  currentIndex={currentPhotoIndex}
-                  onIndexChange={setCurrentPhotoIndex}
-                />
-              </div>
-
-              {/* Навигация фото */}
-              <div className={styles.catalogItemPhotoNavigation}>
-                <button
-                  className={styles.catalogItemPhotoNavBtn}
-                  onClick={handlePrevPhoto}
-                  disabled={currentPhotos.length <= 1}
-                  aria-label="Предыдущее фото"
-                >
-                  <ArrowBackIosNewIcon/>
-                </button>
-                <div className={styles.catalogItemPhotoCounter}>
-                  {currentPhotoIndex + 1} / {currentPhotos.length}
+          <div className={styles.catalogItemPhotoBlock}>
+            {currentPhotos.length > 0 ? (
+              <>
+                <div className={styles.catalogItemGallery}>
+                  <PhotoGallery
+                    photos={currentPhotos}
+                    showFullscreen={showFullscreen}
+                    onCloseFullscreen={handleCloseFullscreen}
+                    showControls={false}
+                    showArrows={false}
+                    currentIndex={currentPhotoIndex}
+                    onIndexChange={setCurrentPhotoIndex}
+                  />
                 </div>
-                <button
-                  className={styles.catalogItemPhotoNavBtn}
-                  onClick={handleNextPhoto}
-                  disabled={currentPhotos.length <= 1}
-                  aria-label="Следующее фото"
-                >
-                  <ArrowForwardIosIcon/>
-                </button>
-                <button
-                  className={styles.catalogItemFullscreenBtn}
-                  onClick={handleFullscreen}
-                  aria-label="Полноэкранный режим"
-                >
-                  <FullscreenIcon fontSize='large'/>
-                </button>
+
+                {/* Навигация фото */}
+                <div className={styles.catalogItemPhotoNavigation}>
+                  <button
+                    className={styles.catalogItemPhotoNavBtn}
+                    onClick={handlePrevPhoto}
+                    disabled={currentPhotos.length <= 1}
+                    aria-label="Предыдущее фото"
+                  >
+                    <ArrowBackIosNewIcon/>
+                  </button>
+                  <div className={styles.catalogItemPhotoCounter}>
+                    {currentPhotoIndex + 1} / {currentPhotos.length}
+                  </div>
+                  <button
+                    className={styles.catalogItemPhotoNavBtn}
+                    onClick={handleNextPhoto}
+                    disabled={currentPhotos.length <= 1}
+                    aria-label="Следующее фото"
+                  >
+                    <ArrowForwardIosIcon/>
+                  </button>
+                  <button
+                    className={styles.catalogItemFullscreenBtn}
+                    onClick={handleFullscreen}
+                    aria-label="Полноэкранный режим"
+                  >
+                    <FullscreenIcon fontSize='large'/>
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.catalogItemNoImage}>
+                <span>Нет изображения</span>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
