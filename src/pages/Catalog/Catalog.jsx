@@ -5,25 +5,23 @@ import Header from '../../components/Header/Header'
 import styles from './Catalog.module.css'
 import catalogImg from '../../assets/catalog_img.png'
 import catalogImg4k from '../../assets/catalog_img-4k.png'
-import garibaldiImg from '../../assets/garibaldi_img.png'
-import lassalImg from '../../assets/lassal_img.png'
-import leninImg from '../../assets/lenin_img.png'
-import volodarskImg from '../../assets/volodarsk_img.png'
 
-import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
-import ArrowRightIcon from '@mui/icons-material/ArrowRight';
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft'
+import ArrowRightIcon from '@mui/icons-material/ArrowRight'
 
 // Маппинг года из creationTime в эпохи (по данным catalogItems.json)
 const getErasFromCreationTime = (creationTime) => {
   if (!creationTime) return []
-  const match = String(creationTime).match(/\d{4}/)
-  const year = match ? parseInt(match[0], 10) : null
-  if (year === null) return []
+  const matches = String(creationTime).match(/\d{4}/g)
+  const years = matches ? matches.map((m) => parseInt(m, 10)) : []
   const eras = []
-  if (year < 1800) eras.push('XVIII век')
-  if (year >= 1800 && year < 1900) eras.push('XIX век')
-  if (year >= 1760 && year <= 1840) eras.push('Эпоха классицизма')
-  return eras
+  for (const year of years) {
+    if (year < 1800) eras.push('XVIII век')
+    if (year >= 1800 && year < 1900) eras.push('XIX век')
+    if (year >= 1900 && year < 2000) eras.push('XX век')
+    if (year >= 1760 && year <= 1840) eras.push('Эпоха классицизма')
+  }
+  return [...new Set(eras)]
 }
 
 const matchesSearch = (item, query) => {
@@ -33,12 +31,22 @@ const matchesSearch = (item, query) => {
     item.name,
     item.title,
     item.sculptor,
+    item.coauthors,
     item.location,
     item.creationTime,
+    item.material,
     ...(Array.isArray(item.texts) ? item.texts : []),
   ].filter(Boolean).join(' ')
   return searchIn.toLowerCase().includes(q)
 }
+
+const getItemImageSrc = (item) => {
+  if (item?.image) return `/data/images/${item.image}`
+  if (item?.photos?.length) return item.photos[0]
+  return null
+}
+
+const VISIBLE_ITEMS = 4
 
 function Catalog() {
   const navigate = useNavigate()
@@ -46,14 +54,6 @@ function Catalog() {
   const [currentItemIndex, setCurrentItemIndex] = useState(0)
   const [imageSrc, setImageSrc] = useState(catalogImg)
   const [items, setItems] = useState([])
-
-  // Маппинг изображений по названиям памятников
-  const monumentImages = {
-    'Памятник Гарибальди': garibaldiImg,
-    'Памятник Лассалю': lassalImg,
-    'Памятник Ленину': leninImg,
-    'Памятник Володарскому': volodarskImg
-  }
 
   useEffect(() => {
     // Определяем, нужно ли использовать 4K изображение
@@ -90,19 +90,25 @@ function Catalog() {
     })
   }, [items, selectedSculptors, selectedEras, selectedMaterials, searchQuery])
 
+  const maxStartIndex = Math.max(0, filteredItems.length - VISIBLE_ITEMS)
+
   useEffect(() => {
-    setCurrentItemIndex((prev) => Math.min(prev, Math.max(0, filteredItems.length - 1)))
-  }, [filteredItems.length])
+    setCurrentItemIndex((prev) => Math.min(prev, maxStartIndex))
+  }, [filteredItems.length, maxStartIndex])
+
+  const visibleItems = useMemo(() => {
+    return filteredItems.slice(currentItemIndex, currentItemIndex + VISIBLE_ITEMS)
+  }, [filteredItems, currentItemIndex])
 
   const handleNextItem = () => {
-    if (filteredItems.length > 0 && currentItemIndex < filteredItems.length - 1) {
-      setCurrentItemIndex((prev) => prev + 1)
+    if (currentItemIndex < maxStartIndex) {
+      setCurrentItemIndex((prev) => Math.min(prev + 1, maxStartIndex))
     }
   }
 
   const handlePrevItem = () => {
     if (currentItemIndex > 0) {
-      setCurrentItemIndex((prev) => prev - 1)
+      setCurrentItemIndex((prev) => Math.max(prev - 1, 0))
     }
   }
 
@@ -117,7 +123,7 @@ function Catalog() {
 
   return (
     <div className={styles.catalog}>
-      <div 
+      <div
         className={styles.catalogBackground}
         style={{ backgroundImage: `url(${imageSrc})` }}
       />
@@ -129,65 +135,61 @@ function Catalog() {
             {filteredItems.length === 0 ? (
               <p className={styles.catalogEmpty}>По вашему запросу ничего не найдено. Измените фильтры или поиск.</p>
             ) : (
-            filteredItems.map((item, index) => {
-              let blockPositionClass = ''
-              if (item.id === 1) blockPositionClass = styles.catalogItemTop
-              else if (item.id === 3) blockPositionClass = styles.catalogItemMiddle
-              else blockPositionClass = styles.catalogItemBottom
+            visibleItems.map((item, index) => {
+              const blockPositionClass =
+                index === 0 ? ''
+                : index === 1 ? styles.catalogItemMiddle
+                : index === 2 ? ''
+                : styles.catalogItemTop
 
-              return (
-                <div
-                  key={item.id}
-                  className={`${styles.catalogItem} ${blockPositionClass}`}
-                  onClick={() => handleItemClick(item)}
-                >
-                <div className={styles.catalogItemImage}>
-                  {monumentImages[item.name] ? (
-                    <img
-                      src={monumentImages[item.name]}
-                      alt={item.name ?? ''}
-                      onError={(e) => {
-                        if (e?.target) e.target.style.display = 'none'
-                      }}
-                    />
-                  ) : item.photos?.length > 0 ? (
-                    <img
-                      src={item.photos[0]}
-                      alt={item.name ?? ''}
-                      onError={(e) => {
-                        if (e?.target) e.target.style.display = 'none'
-                      }}
-                    />
-                  ) : null}
-                </div>
-                <div className={styles.catalogItemOverlay}>
-                  <h3 className={styles.catalogItemTitle}>
-                    {item?.name || item?.title || ''}
-                  </h3>
-                </div>
-              </div>
-              )
-            })
+                return (
+                  <div
+                    key={item.id}
+                    className={`${styles.catalogItem} ${blockPositionClass}`}
+                    onClick={() => handleItemClick(item)}
+                  >
+                    <div className={styles.catalogItemImage}>
+                      {getItemImageSrc(item) ? (
+                        <img
+                          src={getItemImageSrc(item)}
+                          alt={item.name ?? ''}
+                          onError={(e) => {
+                            if (e?.target) e.target.style.display = 'none'
+                          }}
+                        />
+                      ) : null}
+                    </div>
+                    <div className={styles.catalogItemOverlay}>
+                      <h3 className={styles.catalogItemTitle}>
+                        {item?.name || item?.title || ''}
+                      </h3>
+                    </div>
+                  </div>
+                )
+              })
             )}
           </div>
 
-          {/* Стрелочки для переключения между предметами - по середине страницы */}
+          {/* Кнопки навигации: переключение между группами по 4 предмета */}
           <div className={styles.catalogControls}>
-            <button 
+            <button
               className={styles.catalogArrow}
               onClick={handlePrevItem}
               disabled={filteredItems.length === 0 || currentItemIndex === 0}
-              aria-label="Предыдущий предмет"
+              aria-label="Предыдущие предметы"
             >
-              <ArrowLeftIcon fontSize='large'/>
+              <ArrowLeftIcon fontSize='large' />
             </button>
+            <span className={styles.catalogCounter}>
+              {currentItemIndex + 1}–{Math.min(currentItemIndex + VISIBLE_ITEMS, filteredItems.length)} из {filteredItems.length}
+            </span>
             <button
               className={styles.catalogArrow}
               onClick={handleNextItem}
-              disabled={filteredItems.length === 0 || currentItemIndex === filteredItems.length - 1}
-              aria-label="Следующий предмет"
+              disabled={filteredItems.length === 0 || currentItemIndex >= maxStartIndex}
+              aria-label="Следующие предметы"
             >
-              <ArrowRightIcon fontSize='large'/>
+              <ArrowRightIcon fontSize='large' />
             </button>
           </div>
         </div>

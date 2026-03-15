@@ -5,10 +5,6 @@ import Header from '../../components/Header/Header'
 import styles from './CatalogItem.module.css'
 import catalogItemImg from '../../assets/catalog_item_img.png'
 import catalogItemImg4k from '../../assets/catalog_item_img-4k.png'
-import garibaldiImg from '../../assets/garibaldi_img.png'
-import lassalImg from '../../assets/lassal_img.png'
-import leninImg from '../../assets/lenin_img.png'
-import volodarskImg from '../../assets/volodarsk_img.png'
 
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
@@ -24,14 +20,6 @@ function CatalogItem() {
   const [currentTextIndex, setCurrentTextIndex] = useState(0)
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [imageSrc, setImageSrc] = useState(catalogItemImg)
-
-  // Маппинг изображений по названиям памятников
-  const monumentImages = {
-    'Памятник Гарибальди': garibaldiImg,
-    'Памятник Лассалю': lassalImg,
-    'Памятник Ленину': leninImg,
-    'Памятник Володарскому': volodarskImg
-  }
 
   useEffect(() => {
     // Определяем, нужно ли использовать 4K изображение
@@ -102,12 +90,11 @@ function CatalogItem() {
     }
   }
 
-  // Получаем изображения для текущего предмета
+  // Получаем изображения для текущего предмета (из /data/images по полю image или photos)
   const getItemImages = () => {
-    if (item && monumentImages[item.name]) {
-      return [monumentImages[item.name]]
-    }
-    return item?.photos || []
+    if (!item) return []
+    if (item.image) return [`/data/images/${item.image}`]
+    return Array.isArray(item.photos) ? item.photos : []
   }
 
   if (loading) {
@@ -157,6 +144,13 @@ function CatalogItem() {
                 <span className={styles.catalogItemInfoValue}>{item.sculptor}</span>
               </div>
             )}
+
+            {item.coauthors && (
+              <div className={styles.catalogItemInfoRow}>
+                <span className={styles.catalogItemInfoLabel}>Соавторы:</span>
+                <span className={styles.catalogItemInfoValue}>{item.coauthors}</span>
+              </div>
+            )}
             
             {item.creationTime && (
               <div className={styles.catalogItemInfoRow}>
@@ -169,6 +163,20 @@ function CatalogItem() {
               <div className={styles.catalogItemInfoRow}>
                 <span className={styles.catalogItemInfoLabel}>Место:</span>
                 <span className={styles.catalogItemInfoValue}>{item.location}</span>
+              </div>
+            )}
+
+            {item.material && (
+              <div className={styles.catalogItemInfoRow}>
+                <span className={styles.catalogItemInfoLabel}>Материал:</span>
+                <span className={styles.catalogItemInfoValue}>{item.material}</span>
+              </div>
+            )}
+
+            {item.currentStatus && (
+              <div className={styles.catalogItemInfoRow}>
+                <span className={styles.catalogItemInfoLabel}>Сохранность:</span>
+                <span className={styles.catalogItemInfoValue}>{item.currentStatus}</span>
               </div>
             )}
             

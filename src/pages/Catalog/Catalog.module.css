@@ -47,6 +47,7 @@
 
 .catalogItemsContainer {
   display: flex;
+  flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
   gap: clamp(16px, 3vw, 40px);
@@ -187,6 +188,14 @@
   opacity: 0.3;
   cursor: not-allowed;
   pointer-events: none;
+}
+
+.catalogCounter {
+  font-family: 'Raleway-v4020', 'Raleway', serif;
+  font-size: clamp(0.875rem, 2vw, 1rem);
+  color: #221102;
+  min-width: 6em;
+  text-align: center;
 }
 
 .catalogBottomNavigation {

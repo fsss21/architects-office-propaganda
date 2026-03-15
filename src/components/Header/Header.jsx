@@ -8,19 +8,21 @@ import SearchIcon from '@mui/icons-material/Search'
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos'
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew'
 
-const ERA_OPTIONS = ['XVIII век', 'XIX век', 'Эпоха классицизма']
-const MATERIAL_OPTIONS = ['Бронза', 'Гранит', 'Мрамор', 'Камень']
+const ERA_OPTIONS = ['XVIII век', 'XIX век', 'XX век', 'Эпоха классицизма']
+const MATERIAL_OPTIONS = ['Бронза', 'Гранит', 'Гипс тонированный', 'Мрамор', 'Камень']
 
 const getErasFromCreationTime = (creationTime) => {
   if (!creationTime) return []
-  const match = String(creationTime).match(/\d{4}/)
-  const year = match ? parseInt(match[0], 10) : null
-  if (year === null) return []
+  const matches = String(creationTime).match(/\d{4}/g)
+  const years = matches ? matches.map((m) => parseInt(m, 10)) : []
   const eras = []
-  if (year < 1800) eras.push('XVIII век')
-  if (year >= 1800 && year < 1900) eras.push('XIX век')
-  if (year >= 1760 && year <= 1840) eras.push('Эпоха классицизма')
-  return eras
+  for (const year of years) {
+    if (year < 1800) eras.push('XVIII век')
+    if (year >= 1800 && year < 1900) eras.push('XIX век')
+    if (year >= 1900 && year < 2000) eras.push('XX век')
+    if (year >= 1760 && year <= 1840) eras.push('Эпоха классицизма')
+  }
+  return [...new Set(eras)]
 }
 
 const matchesSearch = (item, query) => {
@@ -30,8 +32,10 @@ const matchesSearch = (item, query) => {
     item.name,
     item.title,
     item.sculptor,
+    item.coauthors,
     item.location,
     item.creationTime,
+    item.material,
     ...(Array.isArray(item.texts) ? item.texts : []),
   ].filter(Boolean).join(' ')
   return searchIn.toLowerCase().includes(q)
