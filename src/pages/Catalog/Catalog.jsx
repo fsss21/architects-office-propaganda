@@ -135,12 +135,12 @@ function Catalog() {
             {filteredItems.length === 0 ? (
               <p className={styles.catalogEmpty}>По вашему запросу ничего не найдено. Измените фильтры или поиск.</p>
             ) : (
-            visibleItems.map((item, index) => {
-              const blockPositionClass =
-                index === 0 ? ''
-                : index === 1 ? styles.catalogItemMiddle
-                : index === 2 ? ''
-                : styles.catalogItemTop
+              visibleItems.map((item, index) => {
+                const blockPositionClass =
+                  index === 0 ? ''
+                    : index === 1 ? styles.catalogItemMiddle
+                      : index === 2 ? ''
+                        : styles.catalogItemTop
 
                 return (
                   <div
@@ -180,9 +180,6 @@ function Catalog() {
             >
               <ArrowLeftIcon fontSize='large' />
             </button>
-            <span className={styles.catalogCounter}>
-              {currentItemIndex + 1}–{Math.min(currentItemIndex + VISIBLE_ITEMS, filteredItems.length)} из {filteredItems.length}
-            </span>
             <button
               className={styles.catalogArrow}
               onClick={handleNextItem}

@@ -60,7 +60,7 @@
   max-width: min(400px, 85vw);
   min-height: 40px;
   background: transparent;
-  color: #000;
+  color: #fff;
   padding: clamp(8px, 1.5vw, 10px) clamp(12px, 2vw, 16px);
   line-height: 1.35;
   letter-spacing: 0.02em;
@@ -89,6 +89,7 @@
 
 .progressLinePointActive .progressLineLabel {
   background: #fff;
+  color: #000;
   transition: all 0.3s ease;
 }
 

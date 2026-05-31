@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 import styles from './VideoPreview.module.css'
+import mainPageImg from '../../assets/main_page_img.png'
+import mainPageImg4k from '../../assets/main_page_img-4k.png'
 
 // Заставка: файлы из public (main_page_img.jpg, main_page_img-4k.jpg) или из assets через import
-const DEFAULT_SPLASH = '/main_page_img.jpg'
-const DEFAULT_SPLASH_4K = '/main_page_img-4k.jpg'
+const DEFAULT_SPLASH = mainPageImg
+const DEFAULT_SPLASH_4K = mainPageImg4k
 
 function VideoPreview({ onComplete }) {
   const [showPreview, setShowPreview] = useState(true)

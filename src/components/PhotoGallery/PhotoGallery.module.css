@@ -34,8 +34,7 @@
 }
 
 .photoGalleryImage {
-  width: 100%;
-  height: 100%;
+  height: 600px;
   object-fit: cover;
   cursor: pointer;
   transition: transform 0.3s ease, opacity 0.3s ease;
@@ -139,7 +138,7 @@
 .photoGalleryFullscreen .photoGalleryContainer {
   width: 90% !important;
   height: 90% !important;
-  max-width: 1200px !important;
+  max-width: 1400px !important;
   max-height: 800px !important;
   min-height: auto !important;
   aspect-ratio: auto !important;
@@ -152,6 +151,8 @@
 
 .photoGalleryFullscreen .photoGalleryImage {
   object-fit: contain;
+  width: 100%;
+  height: 100%;
 }
 
 .photoGalleryFullscreen .photoGalleryArrow {
